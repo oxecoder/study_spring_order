@@ -1,6 +1,7 @@
 package com.example.spring_study_order.domain.partner
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class PartnerServiceImpl(
@@ -8,6 +9,7 @@ class PartnerServiceImpl(
   private val partnerReader: PartnerReader
 ) : PartnerService {
 
+  @Transactional
   override fun registerPartner(command: PartnerCommand): PartnerInfo {
     // 1. command -> initPartner
     // 2. initPartner -> save to DB
