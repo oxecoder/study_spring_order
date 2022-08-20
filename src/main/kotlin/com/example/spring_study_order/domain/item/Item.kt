@@ -1,6 +1,8 @@
 package com.example.spring_study_order.domain.item
 
+import com.example.spring_study_order.common.util.TokenGenerator
 import com.example.spring_study_order.domain.AbstractEntity
+import com.example.spring_study_order.domain.item.optiongroup.ItemOptionGroup
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.EnumType
@@ -17,14 +19,14 @@ import javax.persistence.Table
 open class Item(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Long,
-  val itemToken: String,
+  val id: Long = 0,
+  val itemToken: String = TokenGenerator.randomCharacterWithPrefix("prefix_item"),
   val partnerId: Long,
   val itemName: String,
   val itemPrice: Long,
 
   @Enumerated(EnumType.STRING)
-  var status: Status,
+  var status: Status = Status.PREPARE,
 
   /**
    * item : itemOptionGroup 은 1:N 관계
@@ -32,7 +34,7 @@ open class Item(
    */
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "item", cascade = [CascadeType.PERSIST])
-  val itemOptionGroupList: List<ItemOptionGroup>,
+  val itemOptionGroupList: List<ItemOptionGroup> = listOf(),
 
   ) : AbstractEntity() {
 

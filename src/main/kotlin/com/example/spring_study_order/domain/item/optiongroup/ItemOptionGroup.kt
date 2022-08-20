@@ -1,10 +1,13 @@
-package com.example.spring_study_order.domain.item
+package com.example.spring_study_order.domain.item.optiongroup
 
 import com.example.spring_study_order.domain.AbstractEntity
+import com.example.spring_study_order.domain.item.Item
+import com.example.spring_study_order.domain.item.option.ItemOption
 import javax.persistence.CascadeType
 import javax.persistence.Entity
 import javax.persistence.FetchType
 import javax.persistence.GeneratedValue
+import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.JoinColumn
 import javax.persistence.ManyToOne
@@ -15,8 +18,8 @@ import javax.persistence.Table
 @Table(name = "item_option_group")
 open class ItemOptionGroup(
   @Id
-  @GeneratedValue
-  val id: Long,
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  val id: Long = 0,
   val ordering: Int,
   val itemOptionGroupName: String,
 
@@ -28,7 +31,7 @@ open class ItemOptionGroup(
   val item: Item,
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "itemOptionGroup", cascade = [CascadeType.PERSIST])
-  val itemOptionList: List<ItemOption>,
+  val itemOptionList: List<ItemOption> = listOf(),
 
   ) : AbstractEntity() {
 
