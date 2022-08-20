@@ -2,8 +2,6 @@ package com.example.spring_study_order.interfaces.partner
 
 import com.example.spring_study_order.application.partner.PartnerFacade
 import com.example.spring_study_order.common.response.CommonResponse
-import com.example.spring_study_order.domain.partner.PartnerCommand
-import com.example.spring_study_order.domain.partner.PartnerInfo
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -24,7 +22,6 @@ class PartnerApiController(
      * 3. CommonResponse 으로 convert and return
      *
      */
-
     val command = request.toCommand()
     val info = partnerFacade.registerPartner(command)
     val res = PartnerDto.RegisterResponse(info)
