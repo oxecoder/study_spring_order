@@ -1,7 +1,9 @@
 package com.example.spring_study_order.domain.order
 
+import com.example.spring_study_order.domain.item.ItemReader
 import com.example.spring_study_order.domain.item.payment.PaymentProcessor
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class OrderServiceImpl(
@@ -11,11 +13,16 @@ class OrderServiceImpl(
   private val paymentProcessor: PaymentProcessor,
 ) : OrderService {
   override fun registerOrder(registerOrder: OrderCommand.RegisterOrder): String {
-    TODO("Not yet implemented")
+    val order = orderStore.store(registerOrder.toEntity())
+    orderItemSeriesFactory.store(order, requestOrder = registerOrder)
+    return order.orderToken
   }
 
+  @Transactional
   override fun paymentOrder(paymentRequest: OrderCommand.PaymentRequest) {
-    TODO("Not yet implemented")
+    val order = orderReader.getOrder(paymentRequest.orderToken)
+    paymentProcessor.pay(order, paymentRequest)
+    order.orderComplete()
   }
 
   override fun retrieveOrder(orderToken: String): OrderInfo.Main {

@@ -7,9 +7,16 @@ import org.springframework.stereotype.Component
 
 @Component
 class PaymentProcessorImpl(
-
+  private val paymentApiCallerList: List<PaymentApiCaller>,
 ) : PaymentProcessor {
   override fun pay(order: Order, request: OrderCommand.PaymentRequest) {
-    TODO("Not yet implemented")
+    val apiCaller = routingApiCaller(request)
+    apiCaller.pay(request)
+  }
+
+  private fun routingApiCaller(request: OrderCommand.PaymentRequest): PaymentApiCaller {
+    return paymentApiCallerList.first { caller ->
+      caller.support(request.payMethod)
+    }
   }
 }

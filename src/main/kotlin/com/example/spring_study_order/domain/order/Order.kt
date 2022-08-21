@@ -1,5 +1,7 @@
 package com.example.spring_study_order.domain.order
 
+import com.example.spring_study_order.common.exception.IllegalStatusException
+import com.example.spring_study_order.common.util.TokenGenerator
 import com.example.spring_study_order.domain.AbstractEntity
 import com.example.spring_study_order.domain.order.fragment.DeliveryFragment
 import com.example.spring_study_order.domain.order.item.OrderItem
@@ -17,8 +19,8 @@ import javax.persistence.Table
 open class Order(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  val id: Long,
-  val orderToken: String,
+  val id: Long = 0,
+  val orderToken: String = TokenGenerator.randomCharacterWithPrefix("prefix_order"),
   val userId: Long,
   val payMethod: String,
 
@@ -26,10 +28,10 @@ open class Order(
 
   @Embedded
   val deliveryFragment: DeliveryFragment,
-  val orderedAt: ZonedDateTime,
+  val orderedAt: ZonedDateTime = ZonedDateTime.now(),
 
   @Enumerated(EnumType.STRING)
-  private val status: Status,
+  var status: Status = Status.INIT,
 
   ) : AbstractEntity() {
 
@@ -41,5 +43,15 @@ open class Order(
     DELIVERY_COMPLETE("배송완료")
   }
 
+
+  fun calculateTotalAmount(): Int {
+    return orderItemList.sumOf { it.calculateTotalAmount() }
+  }
+
+  fun orderComplete() {
+    if (this.status != Status.INIT) throw IllegalStatusException()
+    this.status = Status.ORDER_COMPLETE
+
+  }
 
 }

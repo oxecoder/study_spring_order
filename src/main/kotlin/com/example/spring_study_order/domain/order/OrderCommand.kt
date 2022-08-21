@@ -1,13 +1,14 @@
 package com.example.spring_study_order.domain.order
 
 import com.example.spring_study_order.domain.item.payment.PayMethod
+import com.example.spring_study_order.domain.order.fragment.DeliveryFragment
 import com.example.spring_study_order.domain.order.item.OrderItem
 
 sealed class OrderCommand {
 
   data class RegisterOrder(
 
-    val userId: String,
+    val userId: Long,
     val payMethod: String,
     val receiverName: String,
     val receiverPhone: String,
@@ -16,7 +17,25 @@ sealed class OrderCommand {
     val receiverAddress2: String,
     val etcMessage: String,
     val orderItemList: List<RegisterOrderItem>,
-  ) : OrderCommand()
+  ) : OrderCommand() {
+
+    fun toEntity(): Order {
+      return Order(
+        userId = userId,
+        payMethod = payMethod,
+        deliveryFragment = DeliveryFragment(
+          receiverName = receiverName,
+          receiverPhone = receiverPhone,
+          receiverZipcode = receiverZipcode,
+          receiverAddress1 = receiverAddress1,
+          receiverAddress2 = receiverAddress2,
+          etcMessage = etcMessage
+        ),
+      )
+    }
+
+  }
+
 
   data class RegisterOrderItem(
     val orderCount: Int,
